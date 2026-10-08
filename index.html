@@ -44,6 +44,21 @@ body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}header{
 .lbl-details span { color: #0056b3; font-weight: bold; }
 .lbl-qr-box { text-align: center; }
 .lbl-qr-box .qr-sub { font-size: 8px; color: #555; margin-top: 4px; font-weight: bold; }
+
+/* Item Image Styles */
+.item-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
+
+/* AI DEVELOPMENT ASSISTANT */
+.ai-dev-card{grid-column:1/-1;border:1px solid #c7d7e5;background:linear-gradient(180deg,#fff,#f8fbfd)}
+.ai-dev-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.ai-dev-status{padding:7px 10px;border-radius:16px;background:#eef2f5;font-size:12px;font-weight:bold}
+.ai-dev-chat{border:1px solid #d6dee5;border-radius:9px;background:#fff;min-height:180px;max-height:360px;overflow:auto;padding:12px;margin:10px 0}
+.ai-msg{margin:7px 0;padding:9px 11px;border-radius:8px;white-space:pre-wrap;word-break:break-word}
+.ai-msg.admin{background:#e8f1fb;margin-left:8%}
+.ai-msg.assistant{background:#f3f4f6;margin-right:8%}
+.ai-code-preview{width:100%;min-height:260px;font-family:Consolas,monospace;font-size:12px;white-space:pre;overflow:auto;background:#0f172a;color:#e2e8f0;border-radius:8px;padding:12px;box-sizing:border-box}
+.ai-warning{padding:10px;border-left:4px solid #d97706;background:#fff7ed;margin:10px 0;font-size:12px}
+
 </style>
 </head><body>
 <header><h1 id="sysHeaderTitle">PARK 5S System</h1><div id="sysHeaderSub">5S • Rooms • Assets • Maintenance • Location Control</div></header>
@@ -52,7 +67,7 @@ body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}header{
 
 <section id="rooms" class="page"><h2>Buildings / Floors / Departments / Rooms</h2><div class="notice">New buildings and rooms can be added whenever the hospital expands.</div><button onclick="roomForm()">+ Add Room</button><div class="panel"><table><thead><tr><th>Building</th><th>Floor</th><th>Department</th><th>Room</th><th>Responsible</th><th>Status</th><th>Actions</th></tr></thead><tbody id="roomsT"></tbody></table></div></section>
 
-<section id="assets" class="page"><h2>Asset, Equipment & Small Item Register</h2><button onclick="assetForm()">+ Add Item</button><div class="panel"><table><thead><tr><th>Identification Code</th><th>Type</th><th>Item</th><th>Dept</th><th>Room</th><th>Condition</th><th>Purchase</th><th>Value</th><th>Status</th><th></th></tr></thead><tbody id="assetsT"></tbody></table></div></section>
+<section id="assets" class="page"><h2>Asset, Equipment & Small Item Register</h2><button onclick="assetForm()">+ Add Item</button><div class="panel"><table><thead><tr><th>Photo</th><th>Identification Code</th><th>Type</th><th>Item</th><th>Dept</th><th>Room</th><th>Condition</th><th>Purchase</th><th>Value</th><th>Status</th><th></th></tr></thead><tbody id="assetsT"></tbody></table></div></section>
 <section id="location" class="page"><h2>Expected vs Actual Location Control</h2><div class="notice">Use this area to identify missing, transferred or unregistered items.</div><div class="panel"><table><thead><tr><th>Room</th><th>Item</th><th>Expected</th><th>Actual</th><th>Result</th><th>Action</th></tr></thead><tbody id="locT"></tbody></table></div></section>
 <section id="maintenance" class="page"><h2>Maintenance Control</h2><div id="mcards" class="cards"></div><div class="panel"><button onclick="maintForm()">+ Record Maintenance</button><table><thead><tr><th>Asset</th><th>ID</th><th>Last</th><th>Next Due</th><th>Provider</th><th>Cost</th></tr></thead><tbody id="maintT"></tbody></table></div></section>
 <section id="audit" class="page"><h2>5S Audit</h2><button onclick="auditForm()">+ Conduct Audit</button><div class="panel"><table><thead><tr><th>Date</th><th>Dept</th><th>Room</th><th>Auditor</th><th>Sort</th><th>Order</th><th>Shine</th><th>Standardize</th><th>Sustain</th><th>Total</th></tr></thead><tbody id="auditT"></tbody></table></div></section>
@@ -88,7 +103,7 @@ body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}header{
 </div>
 </section>
 
-<section id="reports" class="page"><h2>Reports</h2><div class="panel"><h3>Room Contents Report</h3><p>Select a room to list every registered item currently assigned to it.</p><div class="grid"><label>Room<select id="reportRoom" onchange="renderRoomReport()"></select></label></div><br><button onclick="printRoomReport()">Print / Save PDF</button> <button onclick="downloadRoomReport()">Download CSV</button><div id="roomReport" class="panel"></div></div><div id="adminReportTools"><button onclick="exportData()">Export JSON</button> <button onclick="window.print()">Print / Save PDF</button><div class="panel"><pre id="summary"></pre></div></div></section>
+<section id="reports" class="page"><h2>Reports</h2><div class="panel"><h3>Room Contents Report</h3><p>Select a room to list every registered item currently assigned to it.</p><div class="grid"><label>Room<select id="reportRoom" onchange="renderRoomReport()"></select></label></div><br><button onclick="printRoomReport()">Print / Save PDF</button> <button onclick="downloadRoomReport()">Download CSV</button><div id="roomReport" class="panel"></div></div><div id="adminReportTools"><button onclick="window.print()">Print / Save PDF</button><div class="panel"><pre id="summary"></pre></div></div></section>
 
 <section id="users" class="page"><h2>User Management</h2><div class="notice">Only administrators can create accounts, change a user's role, or set their status.</div><button onclick="userForm()">+ Add User</button><div class="panel"><table><thead><tr><th>Username</th><th>Full name</th><th>Role</th><th>Status</th><th>Last login</th><th></th></tr></thead><tbody id="usersT"></tbody></table></div></section>
 <section id="activity" class="page"><h2>Activity Log</h2><div class="notice">Shows the signed-in user responsible for protected actions.</div><div class="panel"><table><thead><tr><th>Date & time</th><th>User</th><th>Action</th><th>Details</th></tr></thead><tbody id="activityT"></tbody></table></div></section>
@@ -129,13 +144,55 @@ body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}header{
 <div id="cpCriterionList" class="control-list"></div>
 </div>
 <div class="card">
-<h3>Backup & Restore</h3>
-<button onclick="cpBackup()">Download Full Backup</button>
-<button onclick="document.getElementById('cpRestore').click()">Restore Backup</button>
-<input id="cpRestore" type="file" accept=".json" style="display:none" onchange="cpRestoreBackup(event)">
+<h3>Live Database</h3>
+<p style="font-size:12px;color:#666">This system is connected to the central Google Sheet database.</p><p style="font-size:12px"><a href="https://docs.google.com/spreadsheets/d/1CYWaepdS4Q27JXID6wEQjTA7dPgRb_7nTaiZwfQhibw/edit" target="_blank" rel="noopener">Open Google Sheet</a></p>
+<span id="liveDbStatus" class="badge">Connecting...</span>
+<br><br>
+<button onclick="syncFromServer()">Refresh Live Data</button>
+<button onclick="openRestoreJson()" style="background:#166534">Restore / Merge JSON</button>
+<button onclick="exportFullJson()" style="background:#6b21a8">Export Full JSON</button>
 <button onclick="cpResetConfig()" style="background:#b91c1c">Reset Configuration</button>
 <p style="font-size:12px;color:#666">Resetting configuration does not delete rooms/assets.</p>
 </div>
+
+<div class="card ai-dev-card">
+  <h3>🤖 AI Development Assistant</h3>
+  <p style="font-size:12px;color:#555">
+    Admin-only development interface. Describe the change you want. The assistant will obtain the current GitHub
+    <code>index.html</code>, generate a revised version, and return it for review. GitHub publishing only happens
+    after you click <b>Approve & Publish</b>.
+  </p>
+  <div class="ai-warning">
+    OpenAI API keys and GitHub tokens are never stored in this HTML. Configure them only in Google Apps Script
+    <b>Script Properties</b>.
+  </div>
+
+  <div class="grid">
+    <label>Development instruction
+      <textarea id="aiDevInstruction" placeholder="Example: Add a department filter to the Asset Register and keep all existing functions working."></textarea>
+    </label>
+    <label>Commit message
+      <input id="aiDevCommit" placeholder="AI update: asset department filter">
+    </label>
+  </div>
+
+  <div class="ai-dev-toolbar">
+    <button onclick="aiDevGenerate()" style="background:#0f766e">✨ Generate Update</button>
+    <button onclick="aiDevPublish()" style="background:#166534">✅ Approve & Publish</button>
+    <button onclick="aiDevDiscard()" style="background:#6b7280">Discard Preview</button>
+    <span id="aiDevStatus" class="ai-dev-status">Ready</span>
+  </div>
+
+  <div id="aiDevChat" class="ai-dev-chat">
+    <div class="ai-msg assistant">AI Development Assistant ready. Enter a development instruction and click “Generate Update”.</div>
+  </div>
+
+  <details>
+    <summary><b>Generated index.html preview</b></summary>
+    <textarea id="aiDevPreview" class="ai-code-preview" readonly placeholder="Generated HTML will appear here after a successful request."></textarea>
+  </details>
+</div>
+
 </div>
 </section>
 </main>
@@ -143,7 +200,13 @@ body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8;color:#222}header{
 
 <script>
 const BASE_SYSTEM_URL = "https://mendispark-pixel.github.io/Parkmendis/";
-const DEPTS=["Reception","OPD","Pharmacy","Ward","Kitchen","Account","Marketing","HR","Maintenance","Crown","IT"];
+// Google Apps Script Web App URL.
+// After deploying Code.gs, paste the Web App URL here.
+const GOOGLE_SHEET_ID = "1CYWaepdS4Q27JXID6wEQjTA7dPgRb_7nTaiZwfQhibw";
+const GOOGLE_DB_API = "https://script.google.com/macros/s/AKfycbxP7M9N93Vtwu5nCbPgkAg1KHH9c8ZoByUZv4z5yOzqb1SaqlPYmkshYnWVqst4UmID/exec";
+const LIVE_DB_ENABLED = !GOOGLE_DB_API.includes("PASTE_YOUR_");
+
+const DEPTS=["Reception","OPD","Pharmacy","Ward","Kitchen","Account","Marketing","HR","Maintenance","Crown","IT"]; // fallback; UI should prefer cpConfig().departments
 
 let db = null;
 try {
@@ -157,10 +220,10 @@ if (!db || !Array.isArray(db.rooms) || !Array.isArray(db.assets)) {
       {id:2,building:"PH",floor:"2nd Floor",dept:"Ward",room:"243",person:"Ward In-Charge",status:"Active"}
     ],
     assets: [
-      {id:"PH-OPD-EB-001",name:"Examination Bed",type:"Equipment",dept:"OPD",room:"Consultation Room 01",condition:"Good",purchase:"2024-05-12",value:250000,status:"Active",last:"2026-08-10",next:"2026-11-10",history:[]},
-      {id:"EQ-001",name:"Ultrasound Machine",type:"Machine",dept:"Radiology (OPD)",room:"243",condition:"Good",purchase:"2025-01-10",value:1200000,status:"Active",last:"2026-06-01",next:"2026-12-01",history:[]},
-      {id:"IT-0456",name:"Ball Pen",type:"Small Item",dept:"Reception",room:"Reception Area",condition:"Good",purchase:"2026-01-01",value:50,status:"Active",last:"",next:"",history:[]},
-      {id:"WAR-243-FUR-001",name:"Bedside Locker",type:"Furniture",dept:"Ward",room:"243",condition:"Good",purchase:"2025-05-15",value:450000,status:"Active",last:"2026-07-10",next:"2027-01-10",history:[]}
+      {id:"PH-OPD-EB-001",name:"Examination Bed",type:"Equipment",dept:"OPD",room:"Consultation Room 01",condition:"Good",purchase:"2024-05-12",value:250000,status:"Active",last:"2026-08-10",next:"2026-11-10",history:[],photo:""},
+      {id:"EQ-001",name:"Ultrasound Machine",type:"Machine",dept:"Radiology (OPD)",room:"243",condition:"Good",purchase:"2025-01-10",value:1200000,status:"Active",last:"2026-06-01",next:"2026-12-01",history:[],photo:""},
+      {id:"IT-0456",name:"Ball Pen",type:"Small Item",dept:"Reception",room:"Reception Area",condition:"Good",purchase:"2026-01-01",value:50,status:"Active",last:"",next:"",history:[],photo:""},
+      {id:"WAR-243-FUR-001",name:"Bedside Locker",type:"Furniture",dept:"Ward",room:"243",condition:"Good",purchase:"2025-05-15",value:450000,status:"Active",last:"2026-07-10",next:"2027-01-10",history:[],photo:""}
     ],
     audits: [],
     actions: [],
@@ -171,7 +234,362 @@ if (!db || !Array.isArray(db.rooms) || !Array.isArray(db.assets)) {
   };
 }
 
-function save(){localStorage.setItem("park5s",JSON.stringify(db));render()}
+let liveSaveTimer = null;
+let liveSaveBusy = false;
+let liveSavePending = false;
+
+function setLiveDbStatus(text, good=true){
+  const el=document.getElementById("liveDbStatus");
+  if(el){
+    el.textContent=text;
+    el.className="badge "+(good?"ok":"bad");
+  }
+}
+
+function localCacheSave(){
+  // Temporary browser cache only. The central database is Google Sheets.
+  try{
+    localStorage.setItem("park5s",JSON.stringify(db));
+    localStorage.setItem("park5sConfig",JSON.stringify(cpConfig()));
+  }catch(e){}
+}
+
+
+function normaliseDatabaseShape(source){
+  const d = (source && typeof source === "object") ? source : {};
+  const arrays = ["rooms","assets","audits","actions","maintenance","redtags","users","activity"];
+  arrays.forEach(k => { if(!Array.isArray(d[k])) d[k]=[]; });
+  return d;
+}
+
+function recordKey(collection, record){
+  if(!record || typeof record !== "object") return "";
+  if(collection === "assets" && record.id) return String(record.id);
+  if(collection === "rooms" && record.id !== undefined) return String(record.id);
+  if(collection === "users" && (record.id || record.username)) return String(record.id || record.username);
+  if(collection === "redtags" && record.id) return String(record.id);
+
+  // For historical/event collections without a guaranteed ID, create a stable
+  // key from their meaningful fields so restoring the same JSON twice does not
+  // create duplicates.
+  const copy = JSON.parse(JSON.stringify(record));
+  delete copy.__mergeKey;
+  delete copy.restoredAt;
+  delete copy.updatedAt;
+  return JSON.stringify(copy);
+}
+
+function mergeRecordArrays(existing, incoming, collection){
+  const result = Array.isArray(existing) ? existing.map(x => JSON.parse(JSON.stringify(x))) : [];
+  const index = new Map();
+
+  result.forEach((item, i) => {
+    const key = recordKey(collection, item);
+    if(key) index.set(key, i);
+  });
+
+  (Array.isArray(incoming) ? incoming : []).forEach(item => {
+    if(!item || typeof item !== "object") return;
+    const copy = JSON.parse(JSON.stringify(item));
+    const key = recordKey(collection, copy);
+    if(!key) return;
+
+    if(index.has(key)){
+      // Update the matching record only. Nothing else in the array is removed.
+      result[index.get(key)] = Object.assign({}, result[index.get(key)], copy);
+    }else{
+      result.push(copy);
+      index.set(key, result.length - 1);
+    }
+  });
+
+  return result;
+}
+
+function mergeDatabase(existing, incoming){
+  const a = normaliseDatabaseShape(existing);
+  const b = normaliseDatabaseShape(incoming);
+  const merged = {};
+  const collections = ["rooms","assets","audits","actions","maintenance","redtags","users","activity"];
+
+  collections.forEach(name => {
+    merged[name] = mergeRecordArrays(a[name], b[name], name);
+  });
+
+  // Preserve any future/non-standard properties already in the database.
+  Object.keys(a).forEach(k => {
+    if(!(k in merged)) merged[k] = a[k];
+  });
+  Object.keys(b).forEach(k => {
+    if(!(k in merged) && !(k in a)) merged[k] = b[k];
+  });
+
+  return merged;
+}
+
+function mergeConfig(existing, incoming){
+  const base = (existing && typeof existing === "object") ? JSON.parse(JSON.stringify(existing)) : {};
+  const add  = (incoming && typeof incoming === "object") ? incoming : {};
+  const merged = Object.assign({}, base);
+
+  Object.keys(add).forEach(k => {
+    if(Array.isArray(add[k])){
+      const old = Array.isArray(base[k]) ? base[k] : [];
+      const values = [...old];
+      add[k].forEach(v => {
+        if(!values.some(x => JSON.stringify(x) === JSON.stringify(v))) values.push(v);
+      });
+      merged[k] = values;
+    }else if(add[k] && typeof add[k] === "object"){
+      merged[k] = Object.assign({}, base[k] || {}, add[k]);
+    }else{
+      merged[k] = add[k];
+    }
+  });
+
+  return merged;
+}
+
+function buildPayload(databaseOverride, configOverride){
+  return {
+    action: "merge",
+    database: databaseOverride || db,
+    config: configOverride || cpConfig(),
+    savedAt: new Date().toISOString(),
+    client: {
+      version: "merge-safe-v1",
+      url: location.href
+    }
+  };
+}
+
+async function saveToLiveDatabase(){
+  if(!LIVE_DB_ENABLED){
+    setLiveDbStatus("Google database not configured", false);
+    return false;
+  }
+
+  // Never drop a change made while another request is still saving.
+  if(liveSaveBusy){
+    liveSavePending = true;
+    return true;
+  }
+
+  liveSaveBusy=true;
+  liveSavePending=false;
+  setLiveDbStatus("Saving...", true);
+
+  try{
+    const payload=buildPayload(db, cpConfig());
+    payload.sheetId = GOOGLE_SHEET_ID;
+
+    const response=await fetch(GOOGLE_DB_API,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload),
+      cache:"no-store"
+    });
+
+    const text=await response.text();
+    let result;
+    try{ result=JSON.parse(text); }
+    catch(_){ throw new Error("Google Apps Script returned a non-JSON response: "+text.slice(0,180)); }
+
+    if(!response.ok || !result.ok) throw new Error(result.error||("HTTP "+response.status));
+
+    if(result.database) db=normaliseDatabaseShape(result.database);
+    if(result.config) localStorage.setItem("park5sConfig",JSON.stringify(result.config));
+
+    localCacheSave();
+    render();
+    setLiveDbStatus(
+      `Google Sheet saved${result.added||result.updated ? `: ${result.added||0} added / ${result.updated||0} updated` : ""}`,
+      true
+    );
+    return true;
+  }catch(e){
+    console.error(e);
+    setLiveDbStatus("Save failed - check Apps Script deployment", false);
+    alert("The central Google Sheet could not be updated.\n\n"+e.message);
+    return false;
+  }finally{
+    liveSaveBusy=false;
+    if(liveSavePending){
+      liveSavePending=false;
+      setTimeout(()=>saveToLiveDatabase(),50);
+    }
+  }
+}
+
+function save(){
+  localCacheSave();
+  render();
+  clearTimeout(liveSaveTimer);
+  liveSaveTimer=setTimeout(()=>saveToLiveDatabase(),150);
+}
+
+async function syncFromServer(){
+  if(!LIVE_DB_ENABLED){
+    alert("First deploy Code.gs as a Google Apps Script Web App and paste its Web App URL into index.html.");
+    return;
+  }
+
+  try{
+    setLiveDbStatus("Loading...", true);
+    const url=GOOGLE_DB_API+"?action=load&sheetId="+encodeURIComponent(GOOGLE_SHEET_ID)+"&t="+Date.now();
+    const response=await fetch(url,{cache:"no-store"});
+    const text=await response.text();
+    let result;
+    try{ result=JSON.parse(text); }
+    catch(_){ throw new Error("Google Apps Script returned a non-JSON response: "+text.slice(0,180)); }
+    if(!response.ok || !result.ok) throw new Error(result.error||("HTTP "+response.status));
+
+    if(result.database) db=normaliseDatabaseShape(result.database);
+    if(result.config) localStorage.setItem("park5sConfig",JSON.stringify(result.config));
+
+    // Ensure a brand-new/empty sheet still has usable default users and arrays,
+    // then persist those defaults to the sheet.
+    securitySetup();
+    localCacheSave();
+    cpRender();
+    render();
+    setLiveDbStatus("Live Google Sheet connected", true);
+
+    if(result.isEmpty) saveToLiveDatabase();
+  }catch(e){
+    console.error(e);
+    setLiveDbStatus("Connection failed", false);
+    alert("Could not load the central Google Sheet.\n\n"+e.message);
+  }
+}
+
+function openRestoreJson(){
+  if(!requireAdmin()) return;
+
+  openModal(`
+    <h2>Restore / Merge JSON</h2>
+    <div class="notice">
+      <b>Safe merge mode:</b> existing Google Sheet records are not deleted.
+      Matching records are updated; new records are added. Unrelated records remain unchanged.
+    </div>
+    <label>JSON Backup File
+      <input id="restoreJsonFile" type="file" accept=".json,application/json">
+    </label>
+    <br>
+    <label style="display:flex;align-items:center;gap:8px">
+      <input id="restorePreviewOnly" type="checkbox" style="width:auto">
+      Preview only — do not save
+    </label>
+    <br>
+    <button onclick="restoreJsonFile()">Restore / Merge</button>
+    <button onclick="close()">Cancel</button>
+    <div id="restoreResult" class="panel" style="margin-top:12px"></div>
+  `);
+}
+
+function mergeStats(before, after){
+  const collections=["rooms","assets","audits","actions","maintenance","redtags","users","activity"];
+  const stats={};
+  collections.forEach(k=>{
+    const b=Array.isArray(before?.[k])?before[k]:[];
+    const a=Array.isArray(after?.[k])?after[k]:[];
+    const bkeys=new Set(b.map(x=>recordKey(k,x)).filter(Boolean));
+    const akeys=new Set(a.map(x=>recordKey(k,x)).filter(Boolean));
+    let added=0, updated=0;
+    a.forEach(x=>{
+      const key=recordKey(k,x);
+      if(!key) return;
+      if(bkeys.has(key)) updated++; else if(akeys.has(key)) added++;
+    });
+    stats[k]={before:b.length,after:a.length,added,updated};
+  });
+  return stats;
+}
+
+async function restoreJsonFile(){
+  if(!requireAdmin()) return;
+
+  const file=document.getElementById("restoreJsonFile")?.files?.[0];
+  const output=document.getElementById("restoreResult");
+  if(!file){ alert("Please select a JSON file."); return; }
+
+  try{
+    const text=await file.text();
+    const parsed=JSON.parse(text);
+
+    const incomingDb=parsed.database || parsed.db || parsed.data || parsed;
+    const incomingConfig=parsed.config || parsed.configuration || null;
+
+    if(!incomingDb || typeof incomingDb!=="object"){
+      throw new Error("The JSON file does not contain a valid database object.");
+    }
+
+    const mergedDb=mergeDatabase(db,incomingDb);
+    const mergedConfig=incomingConfig ? mergeConfig(cpConfig(),incomingConfig) : cpConfig();
+    const stats=mergeStats(db,mergedDb);
+
+    output.innerHTML=`
+      <h3>Merge Preview</h3>
+      ${Object.entries(stats).map(([k,v])=>
+        `<div><b>${safe(k)}</b>: ${v.before} existing → ${v.after} total
+        (${v.added} new, ${v.updated} matched/updated)</div>`
+      ).join("")}
+      <p><b>No delete operation is performed by this restore.</b></p>
+    `;
+
+    if(document.getElementById("restorePreviewOnly")?.checked) return;
+
+    db=mergedDb;
+    localStorage.setItem("park5sConfig",JSON.stringify(mergedConfig));
+    localCacheSave();
+    render();
+    close();
+
+    if(!LIVE_DB_ENABLED){
+      alert("Restore merged locally, but Google Sheets is not configured.");
+      return;
+    }
+
+    setLiveDbStatus("Uploading merged restore...", true);
+    const response=await fetch(GOOGLE_DB_API,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(Object.assign(buildPayload(db,mergedConfig),{sheetId:GOOGLE_SHEET_ID}))
+    });
+    const result=await response.json();
+    if(!result.ok) throw new Error(result.error||"Google Sheet merge failed");
+
+    if(result.database) db=normaliseDatabaseShape(result.database);
+    if(result.config) localStorage.setItem("park5sConfig",JSON.stringify(result.config));
+
+    localCacheSave();
+    cpRender();
+    render();
+    setLiveDbStatus("JSON restored and merged into Google Sheets",true);
+    alert("JSON restore completed.\n\nExisting records were not deleted.");
+  }catch(e){
+    console.error(e);
+    if(output) output.innerHTML=`<span class="bad badge">Restore failed: ${safe(e.message)}</span>`;
+    else alert("Restore failed: "+e.message);
+  }
+}
+
+function exportFullJson(){
+  if(!requireAdmin()) return;
+  const payload={
+    database:db,
+    config:cpConfig(),
+    exportedAt:new Date().toISOString(),
+    formatVersion:1
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="PARK5S_Full_Backup_"+new Date().toISOString().slice(0,10)+".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 function close(){document.getElementById("modal").style.display="none"}
 function openModal(x){document.getElementById("box").innerHTML=x;document.getElementById("modal").style.display="flex"}
 
@@ -187,7 +605,7 @@ function go(id){
 function roomForm(r){
   openModal(`<h2>${r?"Edit":"Add"} Room</h2><div class=grid>
   <label>Building<input id=rb value="${r?.building||""}"></label><label>Floor<input id=rf value="${r?.floor||""}"></label>
-  <label>Department<select id=rd>${DEPTS.map(d=>`<option ${d==(r?.dept||"")?"selected":""}>${d}</option>`).join("")}</select></label>
+  <label>Department<select id=rd>${configuredDepartments().map(d=>`<option ${d==(r?.dept||"")?"selected":""}>${d}</option>`).join("")}</select></label>
   <label>Room / Area<input id=rr value="${r?.room||""}"></label><label>Responsible Person<input id=rp value="${r?.person||""}"></label></div>
   <br><button onclick="saveRoom(${r?.id||0})">Save</button> <button onclick=close()>Cancel</button>`);
 }
@@ -203,7 +621,7 @@ function assetForm(a){
   <label>Identification Code<input id=ai value="${a?.id||""}" placeholder="Generated from room and type"></label>
   <label>Item Type<select id=at>${["Machine","Equipment","Small Item","Tool","Furniture","Other"].map(t=>`<option ${t==(a?.type||"Equipment")?"selected":""}>${t}</option>`).join("")}</select></label>
   <label>Item / Equipment<input id=an value="${a?.name||""}"></label>
-  <label>Department<select id=ad>${DEPTS.map(d=>`<option ${d==(a?.dept||"")?"selected":""}>${d}</option>`).join("")}</select></label>
+  <label>Department<select id=ad>${configuredDepartments().map(d=>`<option ${d==(a?.dept||"")?"selected":""}>${d}</option>`).join("")}</select></label>
   <label>Room<select id=ar>${db.rooms.map(r=>`<option ${r.room==(a?.room||"")?"selected":""}>${r.room}</option>`).join("")}</select></label>
   <label>Condition<select id=ac>${["Excellent","Good","Fair","Needs Repair","Beyond Repair"].map(s=>`<option ${s==(a?.condition||"Good")?"selected":""}>${s}</option>`).join("")}</select></label>
   <label>Purchase Date<input id=ap type=date value="${a?.purchase||""}"></label>
@@ -263,7 +681,7 @@ function redTagForm(asset){
  openModal(`<h2>🔴 New Red Tag</h2><div class=grid>
  <label>Linked Asset (optional)<select id=rtAsset onchange="rtAssetPick()"><option value="">— Not a registered asset —</option>${db.assets.map(a=>`<option value="${a.id}" ${asset&&asset.id===a.id?"selected":""}>${a.id} — ${a.name}</option>`).join("")}</select></label>
  <label>Item Description<input id=rtItem value="${asset?safe(asset.name):""}" placeholder="Item name if not a registered asset"></label>
- <label>Department<select id=rtDept>${DEPTS.map(d=>`<option ${d==(asset?.dept||"")?"selected":""}>${d}</option>`).join("")}</select></label>
+ <label>Department<select id=rtDept>${configuredDepartments().map(d=>`<option ${d==(asset?.dept||"")?"selected":""}>${d}</option>`).join("")}</select></label>
  <label>Room / Location<select id=rtRoom>${db.rooms.map(r=>`<option ${r.room==(asset?.room||"")?"selected":""}>${r.room}</option>`).join("")}</select></label>
  <label>Reason<select id=rtReason>${RED_TAG_REASONS.map(r=>`<option>${r}</option>`).join("")}</select></label>
  <label>Tagged By<input id=rtBy value="${safe(sessionUser()?.name||"")}"></label>
@@ -615,7 +1033,7 @@ function renderRedTagPreview(){
 function maintForm(){openModal(`<h2>Record Maintenance</h2><div class=grid><label>Asset<select id=mi>${db.assets.map(a=>`<option>${a.id}</option>`).join("")}</select></label><label>Date<input id=md type=date value="${new Date().toISOString().slice(0,10)}"></label><label>Next Due<input id=mn type=date></label><label>Provider<input id=mp></label><label>Cost (Rs.)<input id=mv type=number></label></div><button onclick=saveMaint()>Save</button> <button onclick=close()>Cancel</button>`)}
 function saveMaint(){let a=db.assets.find(x=>x.id==mi.value);a.last=md.value;a.next=mn.value;a.status="Active";db.maintenance.push({asset:a.name,id:a.id,last:md.value,next:mn.value,provider:mp.value,cost:+mv.value||0});close();save()}
 
-function auditForm(){openModal(`<h2>5S Audit</h2><div class=grid><label>Department<select id=xdept>${DEPTS.map(d=>`<option>${d}</option>`).join("")}</select></label><label>Room<select id=xroom>${db.rooms.map(r=>`<option>${r.room}</option>`).join("")}</select></label><label>Auditor<input id=xaud></label><label>Date<input id=xdate type=date value="${new Date().toISOString().slice(0,10)}"></label>${["Sort","Set in Order","Shine","Standardize","Sustain"].map(s=>`<label>${s}<select id=x${s.replaceAll(" ","")}><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></label>`).join("")}</div><label>Finding<textarea id=xf></textarea></label><label>Corrective Action<textarea id=xa></textarea></label><button onclick=saveAudit()>Save</button> <button onclick=close()>Cancel</button>`)}
+function auditForm(){openModal(`<h2>5S Audit</h2><div class=grid><label>Department<select id=xdept>${configuredDepartments().map(d=>`<option>${d}</option>`).join("")}</select></label><label>Room<select id=xroom>${db.rooms.map(r=>`<option>${r.room}</option>`).join("")}</select></label><label>Auditor<input id=xaud></label><label>Date<input id=xdate type=date value="${new Date().toISOString().slice(0,10)}"></label>${["Sort","Set in Order","Shine","Standardize","Sustain"].map(s=>`<label>${s}<select id=x${s.replaceAll(" ","")}><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></label>`).join("")}</div><label>Finding<textarea id=xf></textarea></label><label>Corrective Action<textarea id=xa></textarea></label><button onclick=saveAudit()>Save</button> <button onclick=close()>Cancel</button>`)}
 function saveAudit(){let vals=["Sort","SetInOrder","Shine","Standardize","Sustain"].map(s=>+document.getElementById("x"+s).value);db.audits.push({date:xdate.value,dept:xdept.value,room:xroom.value,auditor:xaud.value,vals});if(xa.value)db.actions.push({date:xdate.value,type:"5S Corrective Action",item:"Room Audit",location:xroom.value,finding:xf.value,status:"Open"});close();save()}
 
 function render(){
@@ -636,7 +1054,7 @@ function render(){
   ].map(x=>`<div class=card>${x[0]}<b>${x[1]}</b></div>`).join("");
 
   document.getElementById("roomsT").innerHTML=db.rooms.map(r=>`<tr><td>${r.building}</td><td>${r.floor}</td><td>${r.dept}</td><td>${r.room}</td><td>${r.person}</td><td>${r.status}</td><td><button onclick='roomForm(${JSON.stringify(r)})'>Edit</button> <button onclick="printRoomLabel('${r.id}')">Print Label</button></td></tr>`).join("");
-  document.getElementById("assetsT").innerHTML=db.assets.map(a=>`<tr><td>${a.id}</td><td>${a.type||"Equipment"}</td><td>${a.name}</td><td>${a.dept}</td><td>${a.room}</td><td>${a.condition}</td><td>${a.purchase||"-"}</td><td>Rs. ${(+a.value||0).toLocaleString()}</td><td>${a.status}</td><td><button onclick='assetForm(${JSON.stringify(a)})'>Edit</button> <button onclick="move('${a.id}')">Move</button> <button onclick="missing('${a.id}')">Missing</button> <button onclick='redTagForm(${JSON.stringify(a)})' class="redbtn">Red Tag</button></td></tr>`).join("");
+  document.getElementById("assetsT").innerHTML=db.assets.map(a=>`<tr><td>${a.photo ? `<img src="${a.photo}" class="item-thumb">` : '—'}</td><td>${a.id}</td><td>${a.type||"Equipment"}</td><td>${a.name}</td><td>${a.dept}</td><td>${a.room}</td><td>${a.condition}</td><td>${a.purchase||"-"}</td><td>Rs. ${(+a.value||0).toLocaleString()}</td><td>${a.status}</td><td><button onclick='assetForm(${JSON.stringify(a)})'>Edit</button> <button onclick="move('${a.id}')">Move</button> <button onclick="missing('${a.id}')">Missing</button> <button onclick='redTagForm(${JSON.stringify(a)})' class="redbtn">Red Tag</button></td></tr>`).join("");
   document.getElementById("locT").innerHTML=db.assets.map(a=>`<tr><td>${a.room}</td><td>${a.name} (${a.id})</td><td>1</td><td>${a.status=="Missing"?0:1}</td><td><span class="badge ${a.status=="Missing"?"bad":"ok"}">${a.status=="Missing"?"Missing":"Present"}</span></td><td>${a.status=="Missing"?"Investigate":"Verified"}</td></tr>`).join("");
   document.getElementById("mcards").innerHTML=[["Due Today/Overdue",dueCount],["Under Maintenance",db.assets.filter(a=>a.status=="Under Maintenance").length],["Needs Repair",repairCount]].map(x=>`<div class=card>${x[0]}<b>${x[1]}</b></div>`).join("");
   document.getElementById("maintT").innerHTML=db.assets.filter(a=>a.last||a.next).map(a=>`<tr><td>${a.name}</td><td>${a.id}</td><td>${a.last||"-"}</td><td>${a.next||"-"}</td><td>-</td><td>Rs. ${(+a.value||0).toLocaleString()}</td></tr>`).join("");
@@ -646,7 +1064,7 @@ function render(){
   let rt=document.getElementById("redtagT");
   if(rt)rt.innerHTML=(db.redtags||[]).map(t=>`<tr><td>${t.id}</td><td>${t.date}</td><td>${t.item}</td><td>${t.assetId||"—"}</td><td>${t.dept}</td><td>${t.room}</td><td>${t.reason}</td><td>${t.taggedBy||"—"}</td><td><span class="tagbadge ${t.status==="Resolved"?"tagresolved":"tagopen"}">${t.status}</span></td><td><button onclick="printRedTag('${t.id}')">Print</button> <button onclick="downloadRedTagPDF('${t.id}')">PDF</button>${t.status!=="Resolved"?` <button onclick="resolveRedTagForm('${t.id}')">Resolve</button>`:""}</td></tr>`).join("")||"<tr><td colspan=10>No red tags recorded.</td></tr>";
 
-  document.getElementById("dept").innerHTML=DEPTS.map(d=>{
+  document.getElementById("dept").innerHTML=configuredDepartments().map(d=>{
     let r=db.rooms.filter(x=>x.dept==d),a=db.assets.filter(x=>x.dept==d),au=db.audits.filter(x=>x.dept==d);
     let sc=au.length?Math.round(au.reduce((t,x)=>t+x.vals.reduce((p,q)=>p+q,0)/20*100,0)/au.length):0;
     return `<tr><td>${d}</td><td>${r.length}</td><td>${a.length}</td><td>${a.filter(x=>x.status=="Missing").length}</td><td>${a.filter(x=>x.condition&&x.condition.includes("Repair")).length}</td><td>${sc?sc+"%":"—"}</td></tr>`;
@@ -657,10 +1075,7 @@ function render(){
   renderLabelsTab();
 }
 
-function exportData(){
-  let b=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),u=URL.createObjectURL(b),a=document.createElement("a");
-  a.href=u;a.download="PARK_5S_Data.json";a.click();URL.revokeObjectURL(u);
-}
+function exportData(){alert("JSON export has been removed. The system now uses the live Google database.");}
 
 const CP_DEFAULTS={
   name:"PARK 5S Management System",
@@ -676,6 +1091,10 @@ function cpConfig(){
  try{return Object.assign({},CP_DEFAULTS,JSON.parse(localStorage.getItem("park5sConfig")||"{}"))}
  catch(e){return Object.assign({},CP_DEFAULTS)}
 }
+function configuredDepartments(){
+  const c=cpConfig();
+  return Array.isArray(c.departments)&&c.departments.length?c.departments:DEPTS;
+}
 function cpAdmin(){return typeof isAdmin==="function" && isAdmin()}
 function cpEscape(v){return String(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"})[m])}
 function cpSaveSettings(){
@@ -685,6 +1104,7 @@ function cpSaveSettings(){
  c.subtitle=document.getElementById("cpSubtitle").value.trim()||CP_DEFAULTS.subtitle;
  c.currency=document.getElementById("cpCurrency").value.trim()||"LKR";
  localStorage.setItem("park5sConfig",JSON.stringify(c));
+ saveToLiveDatabase();
  document.title=c.name;
  document.getElementById("sysHeaderTitle").textContent=c.name;
  document.getElementById("sysHeaderSub").textContent=c.subtitle;
@@ -694,12 +1114,12 @@ function cpAdd(type,id){
  if(!cpAdmin()){alert("Admin access required.");return}
  let el=document.getElementById(id),v=el.value.trim();if(!v)return;
  let c=cpConfig();if(!c[type].includes(v))c[type].push(v);
- localStorage.setItem("park5sConfig",JSON.stringify(c));el.value="";cpRender();
+ localStorage.setItem("park5sConfig",JSON.stringify(c));el.value="";cpRender();saveToLiveDatabase();
 }
 function cpRemove(type,i){
  if(!cpAdmin())return;
  let c=cpConfig();c[type].splice(i,1);
- localStorage.setItem("park5sConfig",JSON.stringify(c));cpRender();
+ localStorage.setItem("park5sConfig",JSON.stringify(c));cpRender();saveToLiveDatabase();
 }
 function cpList(type,id){
  let c=cpConfig(),el=document.getElementById(id);if(!el)return;
@@ -712,32 +1132,10 @@ function cpRender(){
  document.getElementById("sysHeaderSub").textContent=c.subtitle;
  cpList("departments","cpDeptList");cpList("statuses","cpStatusList");cpList("conditions","cpConditionList");cpList("criteria","cpCriterionList");
 }
-function cpBackup(){
- if(!cpAdmin()){alert("Admin access required.");return}
- let payload={version:4,exportedAt:new Date().toISOString(),config:cpConfig(),database:db};
- let blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
- let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="PARK_5S_Full_Backup_"+new Date().toISOString().slice(0,10)+".json";a.click();
-}
-function cpRestoreBackup(event){
- if(!cpAdmin()){alert("Admin access required.");return}
- let f=event.target.files[0];if(!f)return;
- let r=new FileReader();
- r.onload=function(){
-  try{
-   let x=JSON.parse(r.result);
-   if(!x.database)throw new Error("Invalid backup file");
-   localStorage.setItem("park5sConfig",JSON.stringify(x.config||CP_DEFAULTS));
-   localStorage.setItem("park5s",JSON.stringify(x.database));
-   alert("Backup restored. The system will reload.");
-   location.reload();
-  }catch(e){alert("Restore failed: "+e.message)}
- };
- r.readAsText(f);
-}
 function cpResetConfig(){
  if(!cpAdmin()){alert("Admin access required.");return}
  if(confirm("Reset Control Panel settings to defaults? Rooms and assets will remain.")){
-  localStorage.setItem("park5sConfig",JSON.stringify(CP_DEFAULTS));cpRender();alert("Configuration reset.");
+  localStorage.setItem("park5sConfig",JSON.stringify(CP_DEFAULTS));cpRender();saveToLiveDatabase();alert("Configuration reset and queued for Google Sheet sync.");
  }
 }
 
@@ -759,15 +1157,27 @@ function isAdmin(){let u=sessionUser();return !!u&&u.role==="Admin"}
 function canAccess(id){let u=sessionUser();return !!u&&(u.role==="Admin"||u.permissions.includes(id))}
 function requireAdmin(){if(isAdmin())return true;alert("Administrator login is required.");showLogin();return false}
 function safe(v){return String(v==null?"":v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"})[m])}
-function logActivity(action,details){let u=sessionUser();if(!u)return;db.activity.unshift({time:new Date().toLocaleString(),user:u.username,action,details:details||""});localStorage.setItem("park5s",JSON.stringify(db));}
+function logActivity(action,details){
+ let u=sessionUser();if(!u)return;
+ db.activity.unshift({time:new Date().toLocaleString(),user:u.username,action,details:details||""});
+ localCacheSave();
+ clearTimeout(liveSaveTimer);
+ liveSaveTimer=setTimeout(()=>saveToLiveDatabase(),150);
+}
 function showLogin(){openModal(`<h2>Sign in</h2><label>Username<input id=loginUser autocomplete=username></label><label>Password<input id=loginPass type=password autocomplete=current-password></label><br><button onclick=login()>Sign in</button>`)}
 function login(){let u=db.users.find(x=>x.username===loginUser.value.trim()&&x.password===loginPass.value&&x.status==="Active");if(!u){alert("Invalid credentials.");return}sessionStorage.setItem("park5sUser",u.username);u.lastLogin=new Date().toLocaleString();logActivity("Signed in","Successful login");close();if(u.role!=="Admin"){go("reports");return}render();}
 function logout(){let u=sessionUser();if(u)logActivity("Signed out","");sessionStorage.removeItem("park5sUser");render();}
 function userForm(user){if(!requireAdmin())return;let allowed=user?.permissions||["reports"],checks=PERMISSION_LINKS.map(([id,label])=>`<label style="display:block;margin:6px 0"><input type=checkbox name=permission value="${id}" ${allowed.includes(id)?"checked":""} style="width:auto;margin-right:7px">${label}</label>`).join("");openModal(`<h2>${user?"Edit":"Add"} User</h2><div class=grid><label>Username<input id=uu value="${safe(user?.username||"")}" ${user?.username==="admin"?"readonly":""}></label><label>Full name<input id=un value="${safe(user?.name||"")}"></label><label>Password<input id=up type=password placeholder="${user?"Leave blank to keep current password":"Set password"}"></label><label>Role<select id=ur><option ${user?.role==="Admin"?"selected":""}>Admin</option><option ${user?.role==="Viewer"?"selected":""}>Viewer</option></select></label><label>Status<select id=us><option ${user?.status!=="Inactive"?"selected":""}>Active</option><option ${user?.status==="Inactive"?"selected":""}>Inactive</option></select></label></div><div class="panel"><h3>Options available to this user</h3>${checks}</div><button onclick="saveUser('${user?.id||""}')">Save User</button> <button onclick=close()>Cancel</button>`)}
 function saveUser(id){if(!requireAdmin())return;let username=uu.value.trim(),existing=db.users.find(u=>u.username===username&&u.id!==id);if(!username||existing){alert("Enter a unique username.");return}let i=db.users.findIndex(u=>u.id===id),old=i>=0?db.users[i]:null;if(old&&old.username===sessionUser()?.username&&us.value==="Inactive"){alert("You cannot deactivate your own signed-in account.");return}let permissions=[...document.querySelectorAll('input[name=permission]:checked')].map(x=>x.value),record={id:id||Date.now().toString(),username,name:un.value.trim()||username,password:up.value||old?.password||"",role:ur.value,status:us.value,lastLogin:old?.lastLogin||"",permissions};if(!record.password){alert("A password is required.");return}if(record.role!=="Admin"&&!permissions.length){alert("Select at least one option for this user.");return}if(i>=0)db.users[i]=record;else db.users.push(record);logActivity(i>=0?"Updated user":"Added user",username);close();save();}
 
-function renderRoomReport(){let sel=document.getElementById("reportRoom"),out=document.getElementById("roomReport");if(!sel||!out)return;let room=sel.value,items=db.assets.filter(a=>a.room===room);out.innerHTML=`<h3>${safe(room)} — ${items.length} item(s)</h3><table><thead><tr><th>Identification Code</th><th>Type</th><th>Item / Equipment</th><th>Department</th><th>Condition</th><th>Status</th></tr></thead><tbody>${items.map(a=>`<tr><td>${safe(a.id)}</td><td>${safe(a.type||"Equipment")}</td><td>${safe(a.name)}</td><td>${safe(a.dept)}</td><td>${safe(a.condition)}</td><td>${safe(a.status)}</td></tr>`).join("")||"<tr><td colspan=6>No registered items in this room.</td></tr>"}</tbody></table>`}
-function printRoomReport(){let r=document.getElementById("roomReport");if(!r)return;let w=window.open("","_blank");w.document.write(`<html><head><title>Room Contents Report</title><style>body{font-family:Arial;padding:25px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:8px}th{background:#eee}</style></head><body><h1>PARK 5S Management System</h1>${r.innerHTML}</body></html>`);w.document.close();w.print()}
+function renderRoomReport(){
+  let sel = document.getElementById("reportRoom"), out = document.getElementById("roomReport");
+  if(!sel || !out) return;
+  let room = sel.value, items = db.assets.filter(a => a.room === room);
+  out.innerHTML = `<h3>${safe(room)} — ${items.length} item(s)</h3><table><thead><tr><th>Photo</th><th>Identification Code</th><th>Type</th><th>Item / Equipment</th><th>Department</th><th>Condition</th><th>Status</th></tr></thead><tbody>${items.map(a => `<tr><td>${a.photo ? `<img src="${a.photo}" class="item-thumb">` : '—'}</td><td>${safe(a.id)}</td><td>${safe(a.type || "Equipment")}</td><td>${safe(a.name)}</td><td>${safe(a.dept)}</td><td>${safe(a.condition)}</td><td>${safe(a.status)}</td></tr>`).join("") || "<tr><td colspan=7>No registered items in this room.</td></tr>"}</tbody></table>`;
+}
+
+function printRoomReport(){let r=document.getElementById("roomReport");if(!r)return;let w=window.open("","_blank");w.document.write(`<html><head><title>Room Contents Report</title><style>body{font-family:Arial;padding:25px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #bbb;padding:8px}th{background:#eee}.item-thumb{width:40px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #ccc}</style></head><body><h1>PARK 5S Management System</h1>${r.innerHTML}</body></html>`);w.document.close();w.print()}
 function downloadRoomReport(){let room=document.getElementById("reportRoom")?.value||"",rows=[["Room","Identification Code","Type","Item / Equipment","Department","Condition","Status"],...db.assets.filter(a=>a.room===room).map(a=>[room,a.id,a.type||"Equipment",a.name,a.dept,a.condition,a.status])],csv=rows.map(r=>r.map(v=>'"'+String(v??"").replaceAll('"','""')+'"').join(",")).join("\n"),blob=new Blob([csv],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Room_Contents_"+room.replace(/[^a-z0-9]+/gi,"_")+".csv";a.click();URL.revokeObjectURL(a.href)}
 
 function renderSecurity(){
@@ -801,4 +1211,154 @@ render=function(){
 securitySetup();
 cpRender();
 render();
+if(LIVE_DB_ENABLED){
+  syncFromServer();
+} else {
+  setTimeout(()=>setLiveDbStatus("Google database not configured", false),0);
+}
+
+
+/* =========================================================
+   AI DEVELOPMENT ASSISTANT
+   Front-end only. Secrets remain in Google Apps Script.
+   ========================================================= */
+const AI_DEV_API = GOOGLE_DB_API; // same Apps Script Web App, extended by AI_Dev_Backend.gs
+let aiDevDraft = null;
+
+function aiDevSetStatus(text, good=true){
+  const el=document.getElementById("aiDevStatus");
+  if(!el)return;
+  el.textContent=text;
+  el.style.background=good?"#dcfce7":"#fee2e2";
+  el.style.color=good?"#166534":"#991b1b";
+}
+
+function aiDevMessage(role, text){
+  const box=document.getElementById("aiDevChat");
+  if(!box)return;
+  const div=document.createElement("div");
+  div.className="ai-msg "+(role==="admin"?"admin":"assistant");
+  div.textContent=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+async function aiDevRequest(payload){
+  if(!requireAdmin()) throw new Error("Administrator login required.");
+  if(!AI_DEV_API) throw new Error("Google Apps Script API is not configured.");
+
+  const response=await fetch(AI_DEV_API,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},
+    body:JSON.stringify(payload),
+    cache:"no-store"
+  });
+
+  const raw=await response.text();
+  let data;
+  try{ data=JSON.parse(raw); }
+  catch(_){ throw new Error("Backend returned non-JSON: "+raw.slice(0,220)); }
+
+  if(!response.ok || !data.ok) throw new Error(data.error||("HTTP "+response.status));
+  return data;
+}
+
+async function aiDevGenerate(){
+  if(!requireAdmin())return;
+
+  const instruction=document.getElementById("aiDevInstruction")?.value.trim();
+  if(!instruction){ alert("Enter a development instruction."); return; }
+
+  aiDevMessage("admin",instruction);
+  aiDevSetStatus("Generating update...",true);
+
+  try{
+    const data=await aiDevRequest({
+      action:"ai_dev_generate",
+      instruction,
+      requestedBy:sessionUser()?.username||"admin",
+      currentSystemUrl:location.href
+    });
+
+    aiDevDraft={
+      html:data.html,
+      sourceSha:data.sourceSha,
+      sourcePath:data.sourcePath||"index.html",
+      summary:data.summary||"AI generated update",
+      draftId:data.draftId||"",
+      generatedAt:new Date().toISOString()
+    };
+
+    const preview=document.getElementById("aiDevPreview");
+    if(preview) preview.value=aiDevDraft.html||"";
+
+    aiDevMessage("assistant",
+      (data.summary||"Update generated.")+
+      "\n\nReview the generated index.html preview. Nothing has been published yet."
+    );
+
+    if(!document.getElementById("aiDevCommit").value.trim()){
+      document.getElementById("aiDevCommit").value="AI update: "+instruction.slice(0,70);
+    }
+
+    logActivity("AI development draft generated",instruction.slice(0,180));
+    aiDevSetStatus("Draft ready for review",true);
+  }catch(e){
+    console.error(e);
+    aiDevMessage("assistant","Generation failed: "+e.message);
+    aiDevSetStatus("Generation failed",false);
+  }
+}
+
+async function aiDevPublish(){
+  if(!requireAdmin())return;
+  if(!aiDevDraft?.html){ alert("Generate and review an update first."); return; }
+
+  const instruction=document.getElementById("aiDevInstruction")?.value.trim()||"";
+  const commitMessage=document.getElementById("aiDevCommit")?.value.trim()||"AI development update";
+
+  const ok=confirm(
+    "Publish this generated index.html to GitHub?\n\n"+
+    "This creates a Git commit and replaces the current repository index.html."
+  );
+  if(!ok)return;
+
+  aiDevSetStatus("Publishing to GitHub...",true);
+
+  try{
+    const data=await aiDevRequest({
+      action:"ai_dev_publish",
+      html:aiDevDraft.html,
+      sourceSha:aiDevDraft.sourceSha,
+      sourcePath:aiDevDraft.sourcePath,
+      commitMessage,
+      instruction,
+      requestedBy:sessionUser()?.username||"admin"
+    });
+
+    aiDevMessage("assistant",
+      "Published successfully.\nCommit: "+(data.commitSha||"created")+
+      (data.commitUrl ? "\n"+data.commitUrl : "")
+    );
+    logActivity("AI development update published",commitMessage);
+    aiDevSetStatus("Published successfully",true);
+
+    // Do not auto-reload because GitHub Pages deployment may not be instant.
+    aiDevDraft=null;
+  }catch(e){
+    console.error(e);
+    aiDevMessage("assistant","Publish failed: "+e.message);
+    aiDevSetStatus("Publish failed",false);
+  }
+}
+
+function aiDevDiscard(){
+  if(!requireAdmin())return;
+  aiDevDraft=null;
+  const p=document.getElementById("aiDevPreview");
+  if(p)p.value="";
+  aiDevMessage("assistant","Draft discarded. No GitHub change was made.");
+  aiDevSetStatus("Ready",true);
+}
+
 </script></body></html>
